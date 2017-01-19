@@ -30,6 +30,14 @@ PKG_SECTION="linux"
 PKG_SHORTDESC="linux26: The Linux kernel 2.6 precompiled kernel binary image and modules"
 PKG_LONGDESC="This package contains a precompiled kernel image and the modules."
 case "$LINUX" in
+  khadas)
+    PKG_VERSION="7f42343"
+    PKG_URL="https://github.com/khadas/linux/archive/$PKG_VERSION.tar.gz"
+    ;;
+  hardkernel)
+    PKG_VERSION="f0ddde5"
+    PKG_URL="https://github.com/hardkernel/linux/archive/$PKG_VERSION.tar.gz"
+    ;;
   amlogic)
     PKG_VERSION="amlogic-3.10-c8d5b2f"
     PKG_URL="$DISTRO_SRC/$PKG_NAME-$PKG_VERSION.tar.xz"
@@ -165,8 +173,10 @@ make_target() {
 
 makeinstall_target() {
   if [ "$BOOTLOADER" = "u-boot" ]; then
+    mkdir -p $INSTALL/lib/modules/3.14.29/kernel/drivers/gpu/arm/mali
+    cp -r  drivers/gpu/arm/mali/mali.ko $INSTALL/lib/modules/3.14.29/kernel/drivers/gpu/arm/mali
     mkdir -p $INSTALL/usr/share/bootloader
-    for dtb in arch/$TARGET_KERNEL_ARCH/boot/dts/*.dtb; do
+    for dtb in arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*.dtb; do
       cp $dtb $INSTALL/usr/share/bootloader 2>/dev/null || :
     done
   elif [ "$BOOTLOADER" = "bcm2835-bootloader" ]; then
